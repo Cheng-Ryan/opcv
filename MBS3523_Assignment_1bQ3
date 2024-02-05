@@ -1,1 +1,51 @@
+from datetime import datetime
+import numpy as np
+import cv2
+
+# 创建一个VideoCapture对象来打开摄像头
+print(datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
+
+cap = cv2.VideoCapture(0  ,cv2.CAP_DSHOW)
+
+ 
+ 
+#cv2.namedWindow('Mirrored Video')
+ 
+# 设置窗口的宽度和高度
+#cv2.resizeWindow('Mirrored Video', 640, 480)
+
+ce=0
+while True:
+    # 读取视频帧
+    ret, frame = cap.read()
+    if ce==0:
+        print(datetime.today().strftime('%Y-%m-%d %H:%M:%S'))
+        ce=203
+    frame_side_by_side=frame
+    # 对帧进行水平翻转
+    frame_lr= cv2.flip(frame, 1)
+    
+    # 将两个视频帧水平拼接在一起
+    frame_side_by_side = np.hstack((frame, frame_lr))
+    #上下
+    frame_ud = cv2.flip( frame_side_by_side, 0)  
+    
+    frame_side_by_side = np.vstack(( frame_side_by_side, frame_ud))
+    frame_side_by_side=cv2.resize(frame_side_by_side,(620,480))
+    # 显示结果
+    #frameGray = cv2.cvtColor(frame_side_by_side, cv2.COLOR_BGR2GRAY)
+   
+    #frameBlur = cv2.GaussianBlur(frameGray,(5,5),0)
+    #frameCanny = cv2.Canny(frame_side_by_side, 100, 300)
+    #cv2.imshow("Webcam Canny Edges", frameCanny)
+
+    frameHSV = cv2.cvtColor(frame_side_by_side, cv2.COLOR_BGR2HSV)
+    #cv2.imshow("Webcam HSV", frameHSV)
+    #cv2.imshow("Webcam Gaussian Blur", frameBlur)
+    cv2.imshow('Mirrored Video', frame_side_by_side)#frame_side_by_side
+    if cv2.waitKey(1) == ord('q'):
+        break
+        
+cap.release()
+cv2.destroyAllWindows()
 
